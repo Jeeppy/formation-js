@@ -1,7 +1,8 @@
 let ville = "Lille";
+let key = '';
 
 function recevoirTemperature(ville) {
-    const url = 'https://api.openweathermap.org/data/2.5/weather?q=' + ville + '&appid=d18207e9cdc6bf4981a181568e3ce968&units=metric';
+    const url = 'https://api.openweathermap.org/data/2.5/weather?q=' + ville + '&appid=' + key + '&units=metric';
     let requete = new XMLHttpRequest();
     requete.open("GET", url);
     requete.responseType = 'json';
