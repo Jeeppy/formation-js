@@ -1,39 +1,34 @@
+let ville = "Lille";
+let key = '';
 
-function chargerScript(script) {
-    return new Promise((resolve, reject) => {
-        let element = document.createElement('script');
-        element.src = script;
-        document.head.append(element);
+function recevoirTemperature(ville) {
+    const url = 'https://api.openweathermap.org/data/2.5/weather?q=' + ville + '&appid=' + key + '&units=metric';
+    let requete = new XMLHttpRequest();
+    requete.open("GET", url);
+    requete.responseType = 'json';
+    requete.send();
 
-        element.onload = () => resolve('Fichier ' + script + ' a été chargé');
-
-        element.onerror = () => reject(new Error('Opération impossible pour le script ' + script));
-    });
+    requete.onload = function() {
+        if (requete.readyState === XMLHttpRequest.DONE) {
+            if (requete.status === 200) {
+                let reponse = requete.response;
+                let temperature = document.querySelector('#temperature_label');
+                temperature.textContent = reponse.main.temp;
+                let elementVille = document.querySelector('#ville')
+                elementVille.textContent = ville;
+                console.log(reponse);
+            }
+            else {
+                console.log("Une erreur est survenu, veuillez ressayez plus tard.");
+            }
+        }
+    }
 }
 
-async function resultat() {
-    try {
-        const scriptA = await chargerScript('test.js');
-        console.log(scriptA);
-        const scriptB = await chargerScript('autre.js');
-        console.log(scriptB);
-    }
-    catch(error) {
-        console.log(error);
-        document.head.lastChild.remove();
-    }
-}
+recevoirTemperature(ville);
 
-resultat();
-
-// async function direBonjour() {
-//     const promesse = new Promise((resolve, reject) => {
-//         setTimeout(() => resolve('Promesse tenu !'), 3000);
-//     });
-
-//     let resultat = await promesse;
-//     console.log(resultat);
-// }
-
-
-// direBonjour();
+let button = document.querySelector("#changer")
+button.addEventListener('click', () => {
+    ville = prompt("Ville ?");
+    recevoirTemperature(ville);
+});
